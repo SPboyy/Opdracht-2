@@ -7,7 +7,7 @@ const products = [
   { id: 1, name: 'Product 1', description: 'Beschrijving van product 1', price: '€10.00', details: 'Dit is een gedetailleerde beschrijving van Product 1.' },
   { id: 2, name: 'Product 2', description: 'Beschrijving van product 2', price: '€15.00', details: 'Dit is een gedetailleerde beschrijving van Product 2.' },
   { id: 3, name: 'Product 3', description: 'Beschrijving van product 3', price: '€20.00', details: 'Dit is een gedetailleerde beschrijving van Product 3.' },
-  { id: 4, name: 'Product 4', description: 'Beschrijving van product 4', price: '€25.00', details: 'Dit is een gedetailleerde beschrijving van Product 4.' }
+  { id: 4, name: 'Product 4', description: 'Beschrijving van product 4', price: '€30.00', details: 'Dit is een gedetailleerde beschrijving van Product 4.' }
 ];
 
 // Stel een statische map in voor de frontendbestanden
