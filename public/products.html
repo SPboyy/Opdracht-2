@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Producten Lijst</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .product-list {
+      list-style-type: none;  /* Verwijder de standaard lijststijlen */
+      padding: 0;
+    }
+
+    .product-item {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-item a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .product-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Producten Lijst</h1>
+  <button onclick="window.location.href='index.html'">Terug naar Hoofdpagina</button>
+
+  <ul id="product-list" class="product-list">
+    <!-- Producten worden hier dynamisch toegevoegd als lijstitems -->
+  </ul>
+
+  <script>
+    // Haal de lijst van producten op van de server
+    fetch('http://localhost:3000/products')  // Dit is de API-route die de producten retourneert
+      .then(response => response.json())  // Zet de JSON-respons om naar een JavaScript-object
+      .then(products => {
+        const productList = document.getElementById('product-list');
+        
+        // Itereer over de producten en maak een lijstitem voor elk product
+        products.forEach(product => {
+          const li = document.createElement('li');
+          li.classList.add('product-item');
+          
+          li.innerHTML = `
+            <h3>${product.name}</h3>
+            <p>${product.description}</p>
+            <a href="product-details.html?id=${product.id}">Bekijk details</a>
+          `;
+          
+          productList.appendChild(li);  // Voeg het lijstitem toe aan de lijst
+        });
+      })
+      .catch(error => console.error('Fout bij het ophalen van de producten:', error));  // Foutmelding als het ophalen niet lukt
+  </script>
+
+</body>
+</html>

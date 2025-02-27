@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details</title>
+  <style>
+    .details {
+      margin-top: 20px;
+    }
+    .details h2 {
+      color: #2c3e50;
+    }
+    .button-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Product Details</h1>
+  <button onclick="window.location.href='products.html'">Terug naar Productenlijst</button>
+
+  <div id="product-details" class="details">
+    <!-- Productdetails worden hier dynamisch weergegeven -->
+  </div>
+
+  <script>
+    // Haal het product-id op uit de querystring van de URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = parseInt(urlParams.get('id'));
+
+    // Haal de productdetails op bij de server
+    fetch(`http://localhost:3000/products/${productId}`)
+      .then(response => response.json())
+      .then(product => {
+        const details = document.getElementById('product-details');
+        details.innerHTML = `
+          <h2>${product.name}</h2>
+          <p><strong>Beschrijving:</strong> ${product.description}</p>
+        `;
+      })
+      .catch(error => console.error('Fout bij het ophalen van productdetails:', error));
+  </script>
+
+</body>
+</html>
