@@ -10,6 +10,13 @@ const products = [
   { id: 4, name: 'Product 4', description: 'Beschrijving van product 4', price: '€30.00', details: 'Dit is een gedetailleerde beschrijving van Product 4.' }
 ];
 
+const users = [
+  { id: 1, name: 'user 1', description: 'Beschrijving van user 1', details: 'Dit is een gedetailleerde beschrijving van user 1.' },
+  { id: 2, name: 'user 2', description: 'Beschrijving van user 2', details: 'Dit is een gedetailleerde beschrijving van user 2.' },
+  { id: 3, name: 'user 3', description: 'Beschrijving van user 3', details: 'Dit is een gedetailleerde beschrijving van user 3.' },
+  { id: 4, name: 'user 4', description: 'Beschrijving van user 4', details: 'Dit is een gedetailleerde beschrijving van user 4.' }
+];
+
 // Stel een statische map in voor de frontendbestanden
 app.use(express.static('public'));
 
@@ -78,7 +85,7 @@ app.get('/products', (req, res) => {
       <body>
 
         <h1>Producten Lijst</h1>
-        <button onclick="window.location.href='index.html'">Terug naar Hoofdpagina</button>
+        <button onclick="window.location.href='/'">Terug naar Hoofdpagina</button>
 
         <ul class="product-list">
   `;
@@ -94,7 +101,6 @@ app.get('/products', (req, res) => {
     `;
   });
 
-  // Sluit de lijst en HTML-tag af
   productListHtml += `
         </ul>
       </body>
@@ -103,6 +109,92 @@ app.get('/products', (req, res) => {
 
   // Stuur de HTML naar de browser
   res.send(productListHtml);
+});
+
+// Route voor de gebruikerspagina die de gebruikers als HTML retourneert
+app.get('/users', (req, res) => {
+  let usersListHtml = `
+    <html>
+      <head>
+        <title>Users Lijst</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+
+          h1 {
+            color: #333;
+          }
+
+          .users-list {
+            list-style-type: none;
+            padding: 0;
+          }
+
+          .users-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          .users-item a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+          }
+
+          .users-item:hover {
+            background-color: #f0f0f0;
+          }
+
+          button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+          }
+
+          button:hover {
+            background-color: #45a049;
+          }
+        </style>
+      </head>
+      <body>
+
+        <h1>Users Lijst</h1>
+        <button onclick="window.location.href='/'">Terug naar Hoofdpagina</button>
+
+        <ul class="users-list">
+  `;
+
+  // Loop door de gebruikers en voeg ze toe aan de HTML
+  users.forEach(user => {
+    usersListHtml += `
+      <li class="users-item">
+        <h3>${user.name}</h3>
+        <p>${user.description}</p>
+        <a href="/user-details?id=${user.id}">Bekijk details</a>
+      </li>
+    `;
+  });
+
+  usersListHtml += `
+        </ul>
+      </body>
+    </html>
+  `;
+
+  // Stuur de HTML naar de browser
+  res.send(usersListHtml);
 });
 
 // Route voor de productdetailspagina
@@ -174,6 +266,76 @@ app.get('/product-details', (req, res) => {
 
   // Stuur de HTML-pagina van het product naar de browser
   res.send(productDetailHtml);
+});
+
+// Route voor de gebruikersdetailspagina
+app.get('/user-details', (req, res) => {
+  const userId = parseInt(req.query.id, 10);  // Verkrijg de user-ID uit de queryparameter
+  const user = users.find(u => u.id === userId);  // Zoek de gebruiker op basis van de ID
+
+  if (!user) {
+    return res.status(404).send('User niet gevonden');
+  }
+
+  // Bouw de HTML-pagina met de gebruikersdetails
+  const userDetailHtml = `
+    <html>
+      <head>
+        <title>${user.name} - Details</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+
+          h1 {
+            color: #333;
+          }
+
+          .user-details {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          .user-details h2 {
+            color: #4CAF50;
+          }
+
+          button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+          }
+
+          button:hover {
+            background-color: #45a049;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>User Details</h1>
+        <div class="user-details">
+          <h2>${user.name}</h2>
+          <p><strong>Beschrijving:</strong> ${user.description}</p>
+          <p><strong>Details:</strong> ${user.details}</p>
+        </div>
+        <button onclick="window.location.href='/users'">Terug naar gebruikerslijst</button>
+      </body>
+    </html>
+  `;
+
+  // Stuur de HTML-pagina van de gebruiker naar de browser
+  res.send(userDetailHtml);
 });
 
 // Start de server

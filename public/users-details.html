@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>users Details</title>
+  <style>
+    .details {
+      margin-top: 20px;
+    }
+    .details h2 {
+      color: #2c3e50;
+    }
+    .button-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>users Details</h1>
+  <button onclick="window.location.href='users.html'">Terug naar usersLijst</button>
+
+  <div id="users-details" class="details">
+    <!-- Productdetails worden hier dynamisch weergegeven -->
+  </div>
+
+  <script>
+    // Haal het product-id op uit de querystring van de URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const usersId = parseInt(urlParams.get('id'));
+
+    // Haal de productdetails op bij de server
+    fetch(`http://localhost:3000/products/${usersId}`)
+      .then(response => response.json())
+      .then(users => {
+        const details = document.getElementById('users-details');
+        details.innerHTML = `
+          <h2>${users.name}</h2>
+          <p><strong>Beschrijving:</strong> ${users.description}</p>
+        `;
+      })
+      .catch(error => console.error('Fout bij het ophalen van usersDetails:', error));
+  </script>
+
+</body>
+</html>
