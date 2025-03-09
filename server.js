@@ -17,6 +17,13 @@ const users = [
   { id: 4, name: 'user 4', description: 'Beschrijving van user 4', details: 'Dit is een gedetailleerde beschrijving van user 4.' }
 ];
 
+const games = [
+  { id: 1, name: 'game 1', description: 'Beschrijving van game 1', details: 'Dit is een gedetailleerde beschrijving van game 1.' },
+  { id: 2, name: 'game 2', description: 'Beschrijving van game 2', details: 'Dit is een gedetailleerde beschrijving van game 2.' },
+  { id: 3, name: 'game 3', description: 'Beschrijving van game 3', details: 'Dit is een gedetailleerde beschrijving van game 3.' },
+  { id: 4, name: 'game 4', description: 'Beschrijving van game 4', details: 'Dit is een gedetailleerde beschrijving van game 4.' }
+];
+
 // Stel een statische map in voor de frontendbestanden
 app.use(express.static('public'));
 
@@ -197,6 +204,92 @@ app.get('/users', (req, res) => {
   res.send(usersListHtml);
 });
 
+// Route voor de gebruikerspagina die de gebruikers als HTML retourneert
+app.get('/games', (req, res) => {
+  let gamesListHtml = `
+    <html>
+      <head>
+        <title>games Lijst</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+
+          h1 {
+            color: #333;
+          }
+
+          .games-list {
+            list-style-type: none;
+            padding: 0;
+          }
+
+          .games-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          .games-item a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+          }
+
+          .games-item:hover {
+            background-color: #f0f0f0;
+          }
+
+          button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+          }
+
+          button:hover {
+            background-color: #45a049;
+          }
+        </style>
+      </head>
+      <body>
+
+        <h1>Games Lijst</h1>
+        <button onclick="window.location.href='/'">Terug naar Hoofdpagina</button>
+
+        <ul class="games-list">
+  `;
+
+  // Loop door de gebruikers en voeg ze toe aan de HTML
+  games.forEach(game => {
+    gamesListHtml += `
+      <li class="games-item">
+        <h3>${game.name}</h3>
+        <p>${game.description}</p>
+        <a href="/game-details?id=${game.id}">Bekijk details</a>
+      </li>
+    `;
+  });
+
+  gamesListHtml += `
+        </ul>
+      </body>
+    </html>
+  `;
+
+  // Stuur de HTML naar de browser
+  res.send(gamesListHtml);
+});
+
 // Route voor de productdetailspagina
 app.get('/product-details', (req, res) => {
   const productId = parseInt(req.query.id, 10);  // Verkrijg de product-ID uit de queryparameter
@@ -336,6 +429,76 @@ app.get('/user-details', (req, res) => {
 
   // Stuur de HTML-pagina van de gebruiker naar de browser
   res.send(userDetailHtml);
+});
+
+// Route voor de gebruikersdetailspagina
+app.get('/game-details', (req, res) => {
+  const gameId = parseInt(req.query.id, 10);  // Verkrijg de user-ID uit de queryparameter
+  const game = games.find(g => g.id === gameId);  // Zoek de gebruiker op basis van de ID
+
+  if (!game) {
+    return res.status(404).send('Game niet gevonden');
+  }
+
+  // Bouw de HTML-pagina met de gebruikersdetails
+  const gameDetailHtml = `
+    <html>
+      <head>
+        <title>${game.name} - Details</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+
+          h1 {
+            color: #333;
+          }
+
+          .game-details {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          .game-details h2 {
+            color: #4CAF50;
+          }
+
+          button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+          }
+
+          button:hover {
+            background-color: #45a049;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>game Details</h1>
+        <div class="game-details">
+          <h2>${game.name}</h2>
+          <p><strong>Beschrijving:</strong> ${game.description}</p>
+          <p><strong>Details:</strong> ${game.details}</p>
+        </div>
+        <button onclick="window.location.href='/games'">Terug naar gameslijst</button>
+      </body>
+    </html>
+  `;
+
+  // Stuur de HTML-pagina van de gebruiker naar de browser
+  res.send(gameDetailHtml);
 });
 
 // Start de server
