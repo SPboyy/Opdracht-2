@@ -24,6 +24,13 @@ const games = [
   { id: 4, name: 'game 4', description: 'Beschrijving van game 4', details: 'Dit is een gedetailleerde beschrijving van game 4.' }
 ];
 
+const laptops = [
+  { id: 1, name: 'laptop 1', description: 'Beschrijving van laptop 1', details: 'Dit is een gedetailleerde beschrijving van laptop 1.' },
+  { id: 2, name: 'laptop 2', description: 'Beschrijving van laptop 2', details: 'Dit is een gedetailleerde beschrijving van laptop 2.' },
+  { id: 3, name: 'laptop 3', description: 'Beschrijving van laptop 3', details: 'Dit is een gedetailleerde beschrijving van laptop 3.' },
+  { id: 4, name: 'laptop 4', description: 'Beschrijving van laptop 4', details: 'Dit is een gedetailleerde beschrijving van laptop 4.' }
+];
+
 // Stel een statische map in voor de frontendbestanden
 app.use(express.static('public'));
 
@@ -116,6 +123,92 @@ app.get('/products', (req, res) => {
 
   // Stuur de HTML naar de browser
   res.send(productListHtml);
+});
+
+// Route voor de laptoppagina die de laptops als HTML retourneert
+app.get('/laptops', (req, res) => {
+  let laptopListHtml = `
+    <html>
+      <head>
+        <title>Laptops Lijst</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+
+          h1 {
+            color: #333;
+          }
+
+          .laptop-list {
+            list-style-type: none;
+            padding: 0;
+          }
+
+          .laptop-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          .laptop-item a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+          }
+
+          .laptop-item:hover {
+            background-color: #f0f0f0;
+          }
+
+          button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+          }
+
+          button:hover {
+            background-color: #45a049;
+          }
+        </style>
+      </head>
+      <body>
+
+        <h1>Laptops Lijst</h1>
+        <button onclick="window.location.href='/'">Terug naar Hoofdpagina</button>
+
+        <ul class="laptop-list">
+  `;
+
+  // Loop door de laptops en voeg ze toe aan de HTML
+  laptops.forEach(laptop => {
+    laptopListHtml += `
+      <li class="laptop-item">
+        <h3>${laptop.name}</h3>
+        <p>${laptop.description}</p>
+        <a href="/laptop-details?id=${laptop.id}">Bekijk details</a>
+      </li>
+    `;
+  });
+
+  laptopListHtml += `
+        </ul>
+      </body>
+    </html>
+  `;
+
+  // Stuur de HTML naar de browser
+  res.send(laptopListHtml);
 });
 
 // Route voor de gebruikerspagina die de gebruikers als HTML retourneert
@@ -360,6 +453,78 @@ app.get('/product-details', (req, res) => {
   // Stuur de HTML-pagina van het product naar de browser
   res.send(productDetailHtml);
 });
+
+// Route voor de laptopdetailspagina
+app.get('/laptop-details', (req, res) => {
+  const laptopId = parseInt(req.query.id, 10);  // Verkrijg de laptop-ID uit de queryparameter
+  const laptop = laptops.find(p => p.id === laptopId);  // Zoek de laptop op basis van de ID
+
+  if (!laptop) {
+    return res.status(404).send('laptop niet gevonden');
+  }
+
+  // Bouw de HTML-pagina met de laptopdetails
+  const laptopDetailHtml = `
+    <html>
+      <head>
+        <title>${laptop.name} - Laptops</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+
+          h1 {
+            color: #333;
+          }
+
+          .laptop-details {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          .laptop-details h2 {
+            color: #4CAF50;
+          }
+
+          button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+          }
+
+          button:hover {
+            background-color: #45a049;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Laptop Details</h1>
+        <div class="laptop-details">
+          <h2>${laptop.name}</h2>
+          <p><strong>Prijs:</strong> ${laptop.price}</p>
+          <p><strong>Beschrijving:</strong> ${laptop.description}</p>
+          <p><strong>Details:</strong> ${laptop.details}</p>
+        </div>
+        <button onclick="window.location.href='/laptops'">Terug naar laptoplijst</button>
+      </body>
+    </html>
+  `;
+
+  // Stuur de HTML-pagina van de laptop naar de browser
+  res.send(laptopDetailHtml);
+});
+
 
 // Route voor de gebruikersdetailspagina
 app.get('/user-details', (req, res) => {
